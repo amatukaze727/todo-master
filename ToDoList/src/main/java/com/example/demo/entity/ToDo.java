@@ -1,8 +1,5 @@
-package com.todo.app.entity;
+package com.example.demo.entity;
 
-import lombok.Data;
-
-@Data
 public class ToDo {
 	// コンストラクタ
 	public ToDo(String id,String task,String timeLimit){

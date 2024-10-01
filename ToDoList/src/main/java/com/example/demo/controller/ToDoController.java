@@ -1,4 +1,4 @@
-package com.todo.app.controller;
+package com.example.demo.controller;
 
 import java.util.List;
 
@@ -7,28 +7,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.todo.app.entity.ToDo;
-import com.todo.app.service.ToDoService;
+import com.example.demo.entity.ToDo;
+import com.example.demo.service.ToDoService;
 
 @Controller
 public class ToDoController {
 	@Autowired
 	ToDoService toDoService;
 	
-	@RequestMapping("/")
-	public String index(Model model){
-		List<ToDo> list = ToDoService.selectAll();
+	@RequestMapping("/index")
+	public String index(Model model) throws Exception{
+		List<ToDo> list = toDoService.selectAll();
 		model.addAttribute("toDos",list);
 		return "index";
 	}
 	@RequestMapping("/add")
 	public String add(ToDo toDo){
-		ToDoService.add(toDo);
+		toDoService.add(toDo);
 		return "redirect:/";
 	}
 	@RequestMapping("/delete")
 	public String delete(ToDo toDo){
-		ToDoService.delete(toDo);
+		toDoService.delete(toDo);
 		return "redirect:/";
 	}
 }

@@ -1,4 +1,4 @@
-package com.todo.app.service;
+package com.example.demo.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.todo.app.constants.ToDoConstants;
-import com.todo.app.entity.ToDo;
+import com.example.demo.constants.ToDoConstants;
+import com.example.demo.entity.ToDo;
 
 @Service
 public class ToDoService {
@@ -22,24 +22,29 @@ public class ToDoService {
 	  * やることリストをディレクトリから取得する
 	  *
 	  * @return やることリスト
+	  * @throws Exception 
 	  */
-	public static List<ToDo> selectAll() {
+	public List<ToDo> selectAll() throws Exception {
 		File dir = new File(ToDoConstants.DIRECTORY);
 		File[] toDoList = dir.listFiles();
 		ArrayList<ToDo> toDoDataList = new ArrayList<>();
 		if(toDoList == null) {
 			return null;
 		}
-		try {
-			for(File toDo: toDoList) {
-				BufferedReader br = new BufferedReader(new FileReader(toDo));
+		for(File toDo: toDoList) {
+			BufferedReader br = null;
+			try {
+				br = new BufferedReader(new FileReader(toDo));
 				String line = br.readLine();
 				br.close();
 				ToDo toDoData = convertToDo(line);
 				toDoDataList.add(toDoData);
+			}catch (Exception e) {
+				e.printStackTrace();
+				throw new Exception();
+			}finally {
+			br.close();
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
 		}
 		return toDoDataList;
 	}
@@ -49,9 +54,9 @@ public class ToDoService {
 	 *
 	 * @param toDo やることリスト
 	 */
-	public static void add(ToDo toDo) {
+	public void add(ToDo toDo) {
 		LocalDateTime now = LocalDateTime.now();
-		String fileName = ToDoConstants.DIRECTORY + "/" + now + ".txt";
+		String fileName = ToDoConstants.DIRECTORY + "\\" + now + ".txt";
 		toDo.id = String.valueOf(now);
 		File file = new File(fileName);
 		try {
@@ -76,7 +81,7 @@ public class ToDoService {
 	 *
 	 * @param toDo やることリスト
 	 */
-	public static void delete(ToDo toDo) {
+	public void delete(ToDo toDo) {
 		File file = new File(ToDoConstants.DIRECTORY + toDo.id + ".txt");
 		file.delete();
 	}

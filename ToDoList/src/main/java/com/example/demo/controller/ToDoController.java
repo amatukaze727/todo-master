@@ -22,13 +22,14 @@ public class ToDoController {
 		return "index";
 	}
 	@RequestMapping("/add")
-	public String add(ToDo toDo){
+	// String型のtaskとtimelimitを追加すべき
+	public String add(ToDo toDo) throws Exception{
 		toDoService.add(toDo);
-		return "redirect:/";
+		return "redirect:/index";
 	}
 	@RequestMapping("/delete")
 	public String delete(ToDo toDo){
 		toDoService.delete(toDo);
-		return "redirect:/";
+		return "redirect:/index";
 	}
 }

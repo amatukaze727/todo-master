@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class ToDoService {
 		File dir = new File(ToDoConstants.DIRECTORY);
 		File[] toDoList = dir.listFiles();
 		ArrayList<ToDo> toDoDataList = new ArrayList<>();
+		// ディレクトリにファイルがない場合はnullを返却する
 		if(toDoList == null) {
 			return null;
 		}
@@ -39,10 +41,10 @@ public class ToDoService {
 				br.close();
 				ToDo toDoData = convertToDo(line);
 				toDoDataList.add(toDoData);
-			}catch (Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 				throw new Exception();
-			}finally {
+			} finally {
 			br.close();
 			}
 		}
@@ -53,26 +55,32 @@ public class ToDoService {
 	 * やることリストを追加する
 	 *
 	 * @param toDo やることリスト
+	 * @throws Exception 
 	 */
-	public void add(ToDo toDo) {
-		LocalDateTime now = LocalDateTime.now();
+	public void add(ToDo toDo) throws Exception {
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
+		String now = format.format(LocalDateTime.now());
 		String fileName = ToDoConstants.DIRECTORY + "\\" + now + ".txt";
-		toDo.id = String.valueOf(now);
+		toDo.setId(now);
 		File file = new File(fileName);
+		PrintWriter printWriter = null;
 		try {
 			// ファイルを作成
 			file.createNewFile();
-			PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+			printWriter = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
 			// ファイル書き込み
-			printWriter.print(toDo.id);
+			printWriter.print(toDo.getId());
 			printWriter.print(",");
-			printWriter.print(toDo.task);
+			printWriter.print(toDo.getTask());
 			printWriter.print(",");
-			printWriter.print(toDo.timeLimit);
+			printWriter.print(toDo.getTimeLimit());
 			// ファイルを閉じる
 			printWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new Exception();
+		} finally {
+			printWriter.close();
 		}
 	}
 
@@ -82,7 +90,7 @@ public class ToDoService {
 	 * @param toDo やることリスト
 	 */
 	public void delete(ToDo toDo) {
-		File file = new File(ToDoConstants.DIRECTORY + toDo.id + ".txt");
+		File file = new File(ToDoConstants.DIRECTORY + "\\" + toDo.getId() + ".txt");
 		file.delete();
 	}
 	
@@ -94,7 +102,11 @@ public class ToDoService {
 	 */
 	public static ToDo convertToDo(String line) {
 		String[] toDoData = line.split(",");
-		return new ToDo(toDoData[0],toDoData[1],toDoData[2]);
+		ToDo toDo = new ToDo();
+		toDo.setId(toDoData[0]);
+		toDo.setTask(toDoData[1]);
+		toDo.setTimeLimit(toDoData[2]);
+		return toDo;
 	}
 
 }

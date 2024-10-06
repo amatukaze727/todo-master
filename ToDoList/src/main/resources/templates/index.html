@@ -14,9 +14,9 @@
 		</form>
 		<h3>タスク一覧</h3>
 		<form method="post" th:action="@{/delete}" th:each="toDo : ${toDos}" >
-			<input type="hidden" name="id" th:value="${todo.id}" />
-			<input type="text" name="task"th:value="${todo.task}" />
-			<input type="text" name="timelLimit"th:value="${todo.timeLimit}" />
+			<input type="hidden" name="id" th:value="${toDo.id}" />
+			<input type="text" name="task"th:value="${toDo.task}" />
+			<input type="text" name="timeLimit"th:value="${toDo.timeLimit}" />
 			<input type="submit" value="削除" />
 		</form>
 	</body>
